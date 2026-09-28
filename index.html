@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dog Gallery</title>
+
+  <style>
+      #gallery {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 20px;
+      }
+
+      .card {
+          text-align: center;
+      }
+
+      .card img {
+          width: 100%;
+          height: 200px;
+          object-fit: cover;
+      }
+
+      body {
+          background: palegreen;
+      }
+
+  </style>
+</head>
+
+<body>
+
+<h1>Dog Breed Gallery</h1>
+
+<!-- Empty container for the cards -->
+<div id="gallery"></div>
+
+<script>
+  async function getDogs() {
+
+    // Get all breeds
+    const response = await fetch("https://dog.ceo/api/breeds/list/all");
+    const data = await response.json();
+
+    // Pick 8 breeds from the API data
+    const breeds = Object.keys(data.message).slice(0, 8);
+
+    for (let breed of breeds) {
+
+      // Get a random picture for the breed
+      const imageResponse = await fetch(
+        `https://dog.ceo/api/breed/${breed}/images/random`
+      );
+
+      const imageData = await imageResponse.json();
+
+      // Make a card
+      const card = document.createElement("div");
+      card.className = "card";
+
+      card.innerHTML = `
+          <img src="${imageData.message}">
+          <h2>${breed}</h2>
+        `;
+
+      // Add the card to the page
+      document.getElementById("gallery").appendChild(card);
+    }
+  }
+
+  getDogs();
+</script>
+
+</body>
+</html>
